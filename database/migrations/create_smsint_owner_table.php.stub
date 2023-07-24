@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('smsint_owner', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->morphs('owner');
+            $table->string('recipient', 20)->nullable();
             $table->foreignId('smsint_id')->nullable()->references('id')->on('smsint')->nullOnDelete();
             $table->json('info');
             $table->timestamps();
