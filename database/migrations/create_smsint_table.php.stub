@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('smsint', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('recipient', 20);
+            $table->enum('type', ['sms', 'viber', 'telegram', 'whatsapp', 'vk', 'fb', 'ok', 'email', 'voice', 'cascade']);
+            $table->integer('cascade_id')->nullable();
+            $table->text('message');
+            $table->boolean('is_validate')->default(false);
+            $table->boolean('is_send')->default(false);
+            $table->decimal('price', 16, 4)->nullable();
+            $table->string('name_send', 16)->nullable();
+            $table->text('send_url')->nullable();
+            $table->json('info_send')->nullable();
+            $table->json('info_answer')->nullable();
+            $table->datetime('start_send_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+};
