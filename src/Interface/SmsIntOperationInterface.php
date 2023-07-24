@@ -10,7 +10,7 @@ interface SmsIntOperationInterface
 
     public function setSenderName(string $senderName): SmsIntOperationInterface;
 
-    public function setRecipient(string $recipient): SmsIntOperationInterface;
+    public function setRecipients(array $recipients): SmsIntOperationInterface;
 
     public function setParams(array $params): SmsIntOperationInterface;
 

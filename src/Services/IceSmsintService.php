@@ -7,11 +7,7 @@ use Services\Smsint\Sms;
 
 class IceSmsintService
 {
-
-    private array $params = [];
-
-    private string $recipient = '';
-    private string $senderName = '';
+    use InitTrait;
 
     //https://lcab.smsint.ru/cabinet/json-doc/sender#section/Vvedenie
     public function __construct()
@@ -19,58 +15,6 @@ class IceSmsintService
 
     }
 
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getRecipient(): string
-    {
-        return $this->recipient;
-    }
-
-    /**
-     * @param string $recipient
-     * @return IceSmsintService
-     */
-    public function setRecipient(string $recipient): IceSmsintService
-    {
-        $this->recipient = $recipient;
-        return $this;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    public function getSenderName(): string
-    {
-        return $this->senderName;
-    }
-
-    /**
-     * @param string $senderName
-     * @return IceSmsintService
-     */
-    public function setSenderName(string $senderName): IceSmsintService
-    {
-        $this->senderName = $senderName;
-        return $this;
-    }
 
     /**
      * @return void
@@ -79,7 +23,7 @@ class IceSmsintService
     {
         (new Sms())
             ->setSenderName($this->getSenderName())
-            ->setRecipient($this->getRecipient())
+            ->setRecipients($this->getRecipients())
             ->setParams($this->getParams())
             ->sendMessage();
     }

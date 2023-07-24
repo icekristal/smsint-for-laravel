@@ -2,6 +2,7 @@
 
 namespace Services\Smsint;
 
+use Enums\SmsintTypeEnum;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -12,9 +13,10 @@ class InitParams implements SmsIntOperationInterface
 
     private string $message;
     private ?string $senderName = null;
-    private string $recipient;
+    private array $recipients = [];
     private array $params = [];
     private array $response = [];
+    private string $typeService = 'sms';
 
     protected string $partUrl = '';
 
@@ -34,9 +36,9 @@ class InitParams implements SmsIntOperationInterface
         return $this;
     }
 
-    public function setRecipient(string $recipient): SmsIntOperationInterface
+    public function setRecipients(array $recipients): SmsIntOperationInterface
     {
-        $this->recipient = $recipient;
+        $this->recipients = $recipients;
         return $this;
     }
 
@@ -57,28 +59,17 @@ class InitParams implements SmsIntOperationInterface
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getRecipient(): string
+    public function getRecipients(): array
     {
-        return $this->recipient;
+        return $this->recipients;
     }
 
     public function setParams(array $params): SmsIntOperationInterface
     {
         $this->params = $params;
         return $this;
-    }
-
-    public function send(): PromiseInterface|Response
-    {
-        $fullUrl = config('services.smsint.url', 'https://lcab.smsint.ru/json/') . config('services.smsint.version', 'v1.0') . $this->partUrl;
-        return Http::acceptJson()
-            ->withHeaders([
-                'X-Token' => config('services.smsint.token'),
-            ])
-            ->timeout(15)
-            ->post($fullUrl, $this->getParams());
     }
 
     /**
@@ -103,5 +94,41 @@ class InitParams implements SmsIntOperationInterface
     public function setResponse($response): void
     {
         $this->response = $response;
+    }
+
+
+
+    /**
+     * @return string
+     */
+    public function getTypeService(): string
+    {
+        return $this->typeService;
+    }
+
+    /**
+     * @param string $typeService
+     * @return InitParams
+     */
+    public function setTypeService(string $typeService): InitParams
+    {
+        $this->typeService = $typeService;
+        return $this;
+    }
+
+
+    public function send()
+    {
+        $fullUrl = config('services.smsint.url', 'https://lcab.smsint.ru/json/') . config('services.smsint.version', 'v1.0') . $this->partUrl;
+        $result =  Http::acceptJson()
+            ->withHeaders([
+                'X-Token' => config('services.smsint.token'),
+            ])
+            ->timeout(15)
+            ->post($fullUrl, $this->getParams());
+
+        //Save in DB and return response
+
+        return $result;
     }
 }
