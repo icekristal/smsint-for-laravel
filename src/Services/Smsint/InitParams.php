@@ -33,7 +33,7 @@ class InitParams implements SmsIntOperationInterface
         return $this;
     }
 
-    public function setSenderName(string $senderName): static
+    public function setSenderName(?string $senderName): static
     {
         $this->senderName = $senderName;
         return $this;
