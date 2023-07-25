@@ -1,9 +1,9 @@
 <?php
 
-namespace Services;
+namespace Icekristal\SmsintForLaravel\Services;
 
 
-use Services\Smsint\Sms;
+use Icekristal\SmsintForLaravel\Services\Smsint\Sms;
 
 class IceSmsintService
 {

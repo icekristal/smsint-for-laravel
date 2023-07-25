@@ -1,6 +1,6 @@
 <?php
 
-namespace Interface;
+namespace Icekristal\SmsintForLaravel\Interface;
 
 interface SmsIntOperationInterface
 {

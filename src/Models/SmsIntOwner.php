@@ -1,9 +1,9 @@
 <?php
 
-namespace Models;
+namespace Icekristal\SmsintForLaravel\Models;
 
 use Carbon\Carbon;
-use Enums\SmsintTypeEnum;
+use Icekristal\SmsintForLaravel\Enums\SmsintTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\belongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

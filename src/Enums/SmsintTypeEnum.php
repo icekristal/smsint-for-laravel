@@ -1,6 +1,6 @@
 <?php
 
-namespace Enums;
+namespace Icekristal\SmsintForLaravel\Enums;
 
 enum SmsintTypeEnum: string
 {

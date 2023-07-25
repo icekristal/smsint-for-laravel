@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace Icekristal\SmsintForLaravel\Services;
 
 use Carbon\Carbon;
 

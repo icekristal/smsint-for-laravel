@@ -1,14 +1,15 @@
 <?php
 
-namespace Services\Smsint;
+namespace Icekristal\SmsintForLaravel\Services\Smsint;
 
-use Enums\SmsintTypeEnum;
+use Icekristal\SmsintForLaravel\Enums\SmsintTypeEnum;
 use GuzzleHttp\Promise\PromiseInterface;
+use Icekristal\SmsintForLaravel\Models\SmsIntOwner;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Interface\SmsIntOperationInterface;
-use Models\SmsInt;
+use Icekristal\SmsintForLaravel\Interface\SmsIntOperationInterface;
+use Icekristal\SmsintForLaravel\Models\SmsInt;
 
 class InitParams implements SmsIntOperationInterface
 {
@@ -154,7 +155,7 @@ class InitParams implements SmsIntOperationInterface
         return $arraySend;
     }
 
-    public function send()
+    public function send(): PromiseInterface|Response
     {
         $sendParams = $this->getParams();
         try {
@@ -170,12 +171,25 @@ class InitParams implements SmsIntOperationInterface
                 'info_send' => $sendParams ?? []
             ]);
 
-            foreach ($sendParams['messages'] as &$sendParam) {
-                foreach ($sendParam as &$message) {
-                    $message['id'] = $smsInt->id;
+            foreach ($sendParams['messages'] as &$message) {
+                $message['id'] = $smsInt->id;
+                if(!is_array(config('smsint.list_model_search_owner'))) continue;
+                foreach (config('smsint.list_model_search_owner') as $classSearchOwner => $fieldsSearchOwner) {
+                    if(!is_array($fieldsSearchOwner)) continue;
+                    foreach ($fieldsSearchOwner as $fieldSearchOwner) {
+                        $resultOwner = $classSearchOwner::query()->where($fieldSearchOwner, $message['recipient'])->first();
+                        if (!is_null($resultOwner)) {
+                            SmsIntOwner::query()->create([
+                                'smsint_id' => $smsInt->id,
+                                'recipient' => $message['recipient'] ?? null,
+                                'owner_type' => $classSearchOwner ?? null,
+                                'owner_id' => $resultOwner->id ?? null,
+                            ]);
+                        }
+                    }
+
                 }
             }
-
         } catch (\Exception $exception) {
             Log::error($exception);
         }

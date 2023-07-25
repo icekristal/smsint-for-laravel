@@ -1,7 +1,9 @@
 <?php
 
+namespace Icekristal\SmsintForLaravel;
+
 use Illuminate\Support\ServiceProvider;
-use Services\IceSmsintService;
+use Icekristal\SmsintForLaravel\Services\IceSmsintService;
 
 class SmsintServiceProvider extends ServiceProvider
 {

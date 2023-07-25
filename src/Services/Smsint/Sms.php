@@ -1,8 +1,8 @@
 <?php
 
-namespace Services\Smsint;
+namespace Icekristal\SmsintForLaravel\Services\Smsint;
 
-use Enums\SmsintTypeEnum;
+use Icekristal\SmsintForLaravel\Enums\SmsintTypeEnum;
 
 class Sms extends InitParams
 {

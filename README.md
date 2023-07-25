@@ -16,3 +16,14 @@ Add to config/services.php
     'version' => env('SMSINT_API_VERSION', "v1.0"),
 ],
 ```
+
+Publish config:
+```php
+php artisan vendor:publish --provider="Icekristal\SmsintForLaravel\SmsintServiceProvider" --tag='config'
+```
+
+Publish migrations:
+```php
+php artisan vendor:publish --provider="Icekristal\SmsintForLaravel\SmsintServiceProvider" --tag='migrations'
+
+```
