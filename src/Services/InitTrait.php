@@ -92,10 +92,10 @@ trait InitTrait
     }
 
     /**
-     * @param string $senderName
+     * @param string|null $senderName
      * @return IceSmsintService
      */
-    public function setSenderName(string $senderName): IceSmsintService
+    public function setSenderName(?string $senderName): IceSmsintService
     {
         $this->senderName = $senderName;
         return $this;
