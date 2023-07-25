@@ -30,7 +30,7 @@ class Sms extends InitParams
                 'source' => $this->getParams()['source'] ?? config('smsint.default_sender_name'),
                 'timeout' => $this->getParams()['timeout'] ?? 3600,
                 'shortenUrl' => $this->getParams()['shortenUrl'] ?? true,
-                'text' => $this->getParams()['text'] ?? '-',
+                'text' => $this->getParams()['message'] ?? '-',
             ];
         }
 

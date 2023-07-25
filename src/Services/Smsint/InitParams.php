@@ -158,6 +158,7 @@ class InitParams implements SmsIntOperationInterface
     public function send(): PromiseInterface|Response
     {
         $sendParams = $this->getParams();
+        $fullUrl = config('services.smsint.url', 'https://lcab.smsint.ru/json/') . config('services.smsint.version', 'v1.0') . $this->partUrl;
         try {
             $smsInt = SmsInt::query()->create([
                 'recipients' => $this->getRecipients(),
@@ -166,6 +167,7 @@ class InitParams implements SmsIntOperationInterface
                 'message' => $this->getParams()['text'] ?? '',
                 'is_validate' => $this->getParams()['is_only_validate'] ?? false,
                 'is_send' => false,
+                'send_url' => $fullUrl,
                 'name_send' => $this->getParams()['source'] ?? '',
                 'start_send_at' => $this->getParams()['startDateTime'] ?? now(),
                 'info_send' => $sendParams ?? []
@@ -194,7 +196,7 @@ class InitParams implements SmsIntOperationInterface
             Log::error($exception);
         }
 
-        $fullUrl = config('services.smsint.url', 'https://lcab.smsint.ru/json/') . config('services.smsint.version', 'v1.0') . $this->partUrl;
+
         $result = Http::acceptJson()
             ->withHeaders([
                 'X-Token' => config('services.smsint.token'),
