@@ -84,9 +84,9 @@ trait InitTrait
 
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSenderName(): string
+    public function getSenderName(): ?string
     {
         return $this->senderName;
     }
