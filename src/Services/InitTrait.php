@@ -11,7 +11,7 @@ trait InitTrait
     private array $params = [];
     private ?string $message = null;
     private ?array $recipients = null;
-    private ?string $senderName = '';
+    private ?string $senderName = null;
     private bool $isOnlyValid = false;
 
     private ?Carbon $startDateTime = null;

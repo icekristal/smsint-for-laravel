@@ -27,10 +27,10 @@ class Sms extends InitParams
             $messages[] = [
                 'recipient' => $recipient,
                 'recipientType' => $this->getParams()['recipientType'] ?? 'recipient',
-                'source' => $this->getParams()['source'] ?? 'source',
+                'source' => $this->getParams()['source'] ?? config('smsint.default_sender_name'),
                 'timeout' => $this->getParams()['timeout'] ?? 3600,
                 'shortenUrl' => $this->getParams()['shortenUrl'] ?? true,
-                'text' => $this->getMessage(),
+                'text' => $this->getParams()['text'] ?? '-',
             ];
         }
 

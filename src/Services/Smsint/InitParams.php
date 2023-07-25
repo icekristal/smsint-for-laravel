@@ -27,19 +27,19 @@ class InitParams implements SmsIntOperationInterface
     {
     }
 
-    public function setMessage(string $message): SmsIntOperationInterface
+    public function setMessage(string $message): static
     {
         $this->message = $message;
         return $this;
     }
 
-    public function setSenderName(string $senderName): SmsIntOperationInterface
+    public function setSenderName(string $senderName): static
     {
         $this->senderName = $senderName;
         return $this;
     }
 
-    public function setRecipients(array $recipients): SmsIntOperationInterface
+    public function setRecipients(array $recipients): static
     {
         $this->recipients = $recipients;
         return $this;
@@ -69,7 +69,7 @@ class InitParams implements SmsIntOperationInterface
         return $this->recipients;
     }
 
-    public function setParams(array $params): SmsIntOperationInterface
+    public function setParams(array $params): static
     {
         $this->params = $params;
         return $this;
@@ -112,7 +112,7 @@ class InitParams implements SmsIntOperationInterface
      * @param string $typeService
      * @return InitParams
      */
-    public function setTypeService(string $typeService): InitParams
+    public function setTypeService(string $typeService): static
     {
         $this->typeService = $typeService;
         return $this;
@@ -163,10 +163,10 @@ class InitParams implements SmsIntOperationInterface
                 'recipients' => $this->getRecipients(),
                 'type' => $this->getTypeService(),
                 'cascade_id' => $this->getParams()['schemeId'] ?? null,
-                'message' => $this->getMessage() ?? '',
+                'message' => $this->getParams()['text'] ?? '',
                 'is_validate' => $this->getParams()['is_only_validate'] ?? false,
                 'is_send' => false,
-                'name_send' => $this->getSenderName() ?? '',
+                'name_send' => $this->getParams()['source'] ?? '',
                 'start_send_at' => $this->getParams()['startDateTime'] ?? now(),
                 'info_send' => $sendParams ?? []
             ]);

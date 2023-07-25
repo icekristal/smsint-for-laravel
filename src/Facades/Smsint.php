@@ -11,6 +11,7 @@ use Icekristal\SmsintForLaravel\Services\IceSmsintService;
  * @method static \Icekristal\SmsintForLaravel\Services\Smsint\InitParams setRecipients(array $recipients)
  * @method static \Icekristal\SmsintForLaravel\Services\Smsint\InitParams setParams(array $params)
  * @method static IceSmsintService sendSms()
+ * @method static \Icekristal\SmsintForLaravel\Services\Smsint\InitParams setIsOnlyValid()
  */
 class Smsint extends Facade
 {
