@@ -35,6 +35,7 @@ class SmsintServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/create_smsint_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_smsint_table.php'),
             ], 'migrations');
         }
+        sleep(2);
         if (!class_exists('CreateSmsintOwnerTable')) {
             $this->publishes([
                 __DIR__ . '/../database/migrations/create_smsint_owner_table.php.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_smsint_owner_table.php'),
