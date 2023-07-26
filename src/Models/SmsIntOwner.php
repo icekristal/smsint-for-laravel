@@ -59,4 +59,12 @@ class SmsIntOwner extends Model
     {
         return $this->belongsTo(SmsInt::class);
     }
+
+    /**
+     * @return MorphTo
+     */
+    public function owner(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }
