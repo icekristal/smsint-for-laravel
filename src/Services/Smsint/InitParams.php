@@ -15,6 +15,9 @@ class InitParams implements SmsIntOperationInterface
 {
 
     private string $message;
+
+    private bool $isSaveDb = false;
+
     private ?string $senderName = null;
     private array $recipients = [];
     private array $params = [];
@@ -159,41 +162,44 @@ class InitParams implements SmsIntOperationInterface
     {
         $sendParams = $this->getParams();
         $fullUrl = config('services.smsint.url', 'https://lcab.smsint.ru/json/') . config('services.smsint.version', 'v1.0') . $this->partUrl;
-        try {
-            $smsInt = SmsInt::query()->create([
-                'recipients' => $this->getRecipients(),
-                'type' => $this->getTypeService(),
-                'cascade_id' => $this->getParams()['schemeId'] ?? null,
-                'message' => $this->getParams()['text'] ?? '',
-                'is_validate' => $this->getParams()['is_only_validate'] ?? false,
-                'is_send' => false,
-                'send_url' => $fullUrl,
-                'name_send' => $this->getParams()['source'] ?? '',
-                'start_send_at' => $this->getParams()['startDateTime'] ?? now(),
-                'info_send' => $sendParams ?? []
-            ]);
 
-            foreach ($sendParams['messages'] as &$message) {
-                $message['id'] = "{$smsInt->id}";
-                if(!is_array(config('smsint.list_model_search_owner'))) continue;
-                foreach (config('smsint.list_model_search_owner') as $classSearchOwner => $fieldsSearchOwner) {
-                    if(!is_array($fieldsSearchOwner)) continue;
-                    foreach ($fieldsSearchOwner as $fieldSearchOwner) {
-                        $resultOwner = $classSearchOwner::query()->where($fieldSearchOwner, $message['recipient'])->first();
-                        if (!is_null($resultOwner)) {
-                            SmsIntOwner::query()->create([
-                                'smsint_id' => $smsInt->id,
-                                'recipient' => $message['recipient'] ?? null,
-                                'owner_type' => $classSearchOwner ?? null,
-                                'owner_id' => $resultOwner->id ?? null,
-                            ]);
+        if ($this->isSaveDb) {
+            try {
+                $smsInt = SmsInt::query()->create([
+                    'recipients' => $this->getRecipients(),
+                    'type' => $this->getTypeService(),
+                    'cascade_id' => $this->getParams()['schemeId'] ?? null,
+                    'message' => $this->getParams()['text'] ?? '',
+                    'is_validate' => $this->getParams()['is_only_validate'] ?? false,
+                    'is_send' => false,
+                    'send_url' => $fullUrl,
+                    'name_send' => $this->getParams()['source'] ?? '',
+                    'start_send_at' => $this->getParams()['startDateTime'] ?? now(),
+                    'info_send' => $sendParams ?? []
+                ]);
+
+                foreach ($sendParams['messages'] as &$message) {
+                    $message['id'] = "{$smsInt->id}";
+                    if (!is_array(config('smsint.list_model_search_owner'))) continue;
+                    foreach (config('smsint.list_model_search_owner') as $classSearchOwner => $fieldsSearchOwner) {
+                        if (!is_array($fieldsSearchOwner)) continue;
+                        foreach ($fieldsSearchOwner as $fieldSearchOwner) {
+                            $resultOwner = $classSearchOwner::query()->where($fieldSearchOwner, $message['recipient'])->first();
+                            if (!is_null($resultOwner)) {
+                                SmsIntOwner::query()->create([
+                                    'smsint_id' => $smsInt->id,
+                                    'recipient' => $message['recipient'] ?? null,
+                                    'owner_type' => $classSearchOwner ?? null,
+                                    'owner_id' => $resultOwner->id ?? null,
+                                ]);
+                            }
                         }
-                    }
 
+                    }
                 }
+            } catch (\Exception $exception) {
+                Log::error($exception);
             }
-        } catch (\Exception $exception) {
-            Log::error($exception);
         }
 
 
@@ -205,27 +211,45 @@ class InitParams implements SmsIntOperationInterface
             ->post($fullUrl, $sendParams);
 
         //Save in DB and return response
-        try {
-            $isSend = false;
-            $price = 0;
-            if ($result->status() == 200) {
-                $isSend = true;
-                $price = $result?->body()?->result?->price?->sum ?? 0;
+        if ($this->isSaveDb) {
+            try {
+                $isSend = false;
+                $price = 0;
+                if ($result->status() == 200) {
+                    $isSend = true;
+                    $price = $result?->body()?->result?->price?->sum ?? 0;
+                }
+
+                if (isset($smsInt) && !is_null($smsInt)) {
+                    $smsInt->update([
+                        'price' => $price,
+                        'is_send' => $isSend,
+                        'info_answer' => $result?->body(),
+                    ]);
+                }
+
+
+            } catch (\Exception $exception) {
+                Log::error($exception);
             }
-
-            if (isset($smsInt) && !is_null($smsInt)) {
-                $smsInt->update([
-                    'price' => $price,
-                    'is_send' => $isSend,
-                    'info_answer' => $result?->body(),
-                ]);
-            }
-
-
-        } catch (\Exception $exception) {
-            Log::error($exception);
         }
 
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSaveDb(): bool
+    {
+        return $this->isSaveDb;
+    }
+
+    /**
+     * @param bool $isSaveDb
+     */
+    public function setIsSaveDb(bool $isSaveDb): void
+    {
+        $this->isSaveDb = $isSaveDb;
     }
 }

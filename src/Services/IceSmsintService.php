@@ -28,5 +28,14 @@ class IceSmsintService
             ->sendMessage();
     }
 
+    /**
+     * @param array $listMessagesIds
+     * @return void
+     */
+    public function getSmsStatus(array $listMessagesIds): void
+    {
+        (new Sms())->getStatus($listMessagesIds);
+    }
+
 
 }

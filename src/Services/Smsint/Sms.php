@@ -2,7 +2,9 @@
 
 namespace Icekristal\SmsintForLaravel\Services\Smsint;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Icekristal\SmsintForLaravel\Enums\SmsintTypeEnum;
+use Illuminate\Http\Client\Response;
 
 class Sms extends InitParams
 {
@@ -21,6 +23,7 @@ class Sms extends InitParams
     {
         $this->partUrl .= "/send/text";
         $arraySend = self::initTotalParams($this->getParams());
+        $this->setIsSaveDb(true);
         $messages = [];
 
         foreach ($this->getRecipients() as $recipient) {
@@ -40,5 +43,12 @@ class Sms extends InitParams
 
         $this->setParams($arraySend);
         $this->send();
+    }
+
+    public function getStatus(array $listMessagesIds): PromiseInterface|Response
+    {
+        $this->partUrl .= "/status";
+        $this->setParams($listMessagesIds);
+        return $this->send();
     }
 }
