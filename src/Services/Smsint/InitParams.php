@@ -174,7 +174,7 @@ class InitParams implements SmsIntOperationInterface
             ]);
 
             foreach ($sendParams['messages'] as &$message) {
-                $message['id'] = $smsInt->id;
+                $message['id'] = "{$smsInt->id}";
                 if(!is_array(config('smsint.list_model_search_owner'))) continue;
                 foreach (config('smsint.list_model_search_owner') as $classSearchOwner => $fieldsSearchOwner) {
                     if(!is_array($fieldsSearchOwner)) continue;
