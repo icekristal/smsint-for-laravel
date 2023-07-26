@@ -1,6 +1,8 @@
 # smsint-for-laravel
 Integration service smsint for laravel
 
+Documentation: https://lcab.smsint.ru/cabinet/json-doc/sender
+
 install:
 
 ```php
@@ -26,4 +28,20 @@ Publish migrations:
 ```php
 php artisan vendor:publish --provider="Icekristal\SmsintForLaravel\SmsintServiceProvider" --tag='migrations'
 
+```
+
+Use SMS:
+```php
+use Icekristal\SmsintForLaravel\Facades\Smsint;
+
+$phone = ["+79007778899", "+37008009900"];
+$textMessage = "Test message integration for service smsint";
+$service = Smsint::setRecipients($phone);
+$service->setSenderName("SenderName");
+$service->setMessage($textMessage);
+$service->setIsOnlyValid(true); //true - no send, only check.
+$service->setParams([$params]); //set no required params in documentation
+$service->sendSms();
+
+$infoStatus = Smsint::getSmsStatus(["2", "3"]);
 ```
