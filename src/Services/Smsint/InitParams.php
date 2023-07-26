@@ -170,7 +170,7 @@ class InitParams implements SmsIntOperationInterface
                     'type' => $this->getTypeService(),
                     'cascade_id' => $this->getParams()['schemeId'] ?? null,
                     'message' => $this->getParams()['text'] ?? '',
-                    'is_validate' => $this->getParams()['is_only_validate'] ?? false,
+                    'is_validate' => $this->getParams()['is_only_validate'] ?? $this->getParams()['validate'] ?? false,
                     'is_send' => false,
                     'send_url' => $fullUrl,
                     'name_send' => $this->getParams()['source'] ?? '',
