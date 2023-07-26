@@ -13,7 +13,7 @@ return new class extends Migration
             $table->morphs('owner');
             $table->string('recipient', 20)->nullable();
             $table->foreignId('smsint_id')->nullable()->references('id')->on('smsint')->nullOnDelete();
-            $table->json('info');
+            $table->json('info')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

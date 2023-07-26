@@ -191,6 +191,7 @@ class InitParams implements SmsIntOperationInterface
                                     'recipient' => $message['recipient'] ?? null,
                                     'owner_type' => $classSearchOwner ?? null,
                                     'owner_id' => $resultOwner->id ?? null,
+                                    'info' => $message ?? []
                                 ]);
                             }
                         }
