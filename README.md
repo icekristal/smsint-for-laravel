@@ -1,4 +1,4 @@
-# smsint-for-laravel
+# smsint for laravel
 Integration service smsint for laravel
 
 Documentation: https://lcab.smsint.ru/cabinet/json-doc/sender
@@ -28,6 +28,10 @@ Publish migrations:
 ```php
 php artisan vendor:publish --provider="Icekristal\SmsintForLaravel\SmsintServiceProvider" --tag='migrations'
 
+```
+Use:
+```php
+php artisan migrate
 ```
 
 Use SMS:
