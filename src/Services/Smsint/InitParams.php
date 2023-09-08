@@ -248,9 +248,11 @@ class InitParams implements SmsIntOperationInterface
 
     /**
      * @param bool $isSaveDb
+     * @return InitParams
      */
-    public function setIsSaveDb(bool $isSaveDb): void
+    public function setIsSaveDb(bool $isSaveDb): static
     {
         $this->isSaveDb = $isSaveDb;
+        return $this;
     }
 }
