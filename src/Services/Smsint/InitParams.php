@@ -5,6 +5,7 @@ namespace Icekristal\SmsintForLaravel\Services\Smsint;
 use Icekristal\SmsintForLaravel\Enums\SmsintTypeEnum;
 use GuzzleHttp\Promise\PromiseInterface;
 use Icekristal\SmsintForLaravel\Models\SmsIntOwner;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,7 @@ class InitParams implements SmsIntOperationInterface
 {
 
     private string $message;
+    private ?Model $owner = null;
 
     private bool $isSaveDb = false;
 
@@ -178,26 +180,37 @@ class InitParams implements SmsIntOperationInterface
                     'info_send' => $sendParams ?? []
                 ]);
 
-                foreach ($sendParams['messages'] as &$message) {
-                    $message['id'] = "{$smsInt->id}";
-                    if (!is_array(config('smsint.list_model_search_owner'))) continue;
-                    foreach (config('smsint.list_model_search_owner') as $classSearchOwner => $fieldsSearchOwner) {
-                        if (!is_array($fieldsSearchOwner)) continue;
-                        foreach ($fieldsSearchOwner as $fieldSearchOwner) {
-                            $resultOwner = $classSearchOwner::query()->where($fieldSearchOwner, $message['recipient'])->first();
-                            if (!is_null($resultOwner)) {
-                                SmsIntOwner::query()->create([
-                                    'smsint_id' => $smsInt->id,
-                                    'recipient' => $message['recipient'] ?? null,
-                                    'owner_type' => $classSearchOwner ?? null,
-                                    'owner_id' => $resultOwner->id ?? null,
-                                    'info' => $message ?? []
-                                ]);
+                if (!is_null($this->owner)) {
+                    SmsIntOwner::query()->create([
+                        'smsint_id' => $smsInt->id,
+                        'recipient' => $sendParams['messages'][0]['recipient'] ?? null,
+                        'owner_type' => get_class($this->owner) ?? null,
+                        'owner_id' => $this->owner->id ?? null,
+                        'info' => $sendParams['messages'][0] ?? []
+                    ]);
+                }else{
+                    foreach ($sendParams['messages'] as &$message) {
+                        $message['id'] = "{$smsInt->id}";
+                        if (!is_array(config('smsint.list_model_search_owner'))) continue;
+                        foreach (config('smsint.list_model_search_owner') as $classSearchOwner => $fieldsSearchOwner) {
+                            if (!is_array($fieldsSearchOwner)) continue;
+                            foreach ($fieldsSearchOwner as $fieldSearchOwner) {
+                                $resultOwner = $classSearchOwner::query()->where($fieldSearchOwner, $message['recipient'])->first();
+                                if (!is_null($resultOwner)) {
+                                    SmsIntOwner::query()->create([
+                                        'smsint_id' => $smsInt->id,
+                                        'recipient' => $message['recipient'] ?? null,
+                                        'owner_type' => $classSearchOwner ?? null,
+                                        'owner_id' => $resultOwner->id ?? null,
+                                        'info' => $message ?? []
+                                    ]);
+                                }
                             }
-                        }
 
+                        }
                     }
                 }
+
             } catch (\Exception $exception) {
                 Log::error($exception);
             }
@@ -241,18 +254,29 @@ class InitParams implements SmsIntOperationInterface
     /**
      * @return bool
      */
-    public function isSaveDb(): bool
+    public function getIsSaveDb(): bool
     {
         return $this->isSaveDb;
     }
 
-    /**
-     * @param bool $isSaveDb
-     * @return InitParams
-     */
     public function setIsSaveDb(bool $isSaveDb): static
     {
         $this->isSaveDb = $isSaveDb;
         return $this;
+    }
+
+    /**
+     * @param Model|null $owner
+     * @return InitParams
+     */
+    public function setOwner(?Model $owner): InitParams
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
+    public function getOwner(): ?Model
+    {
+        return $this->owner;
     }
 }

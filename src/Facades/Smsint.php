@@ -13,6 +13,7 @@ use Icekristal\SmsintForLaravel\Services\IceSmsintService;
  * @method static IceSmsintService sendSms()
  * @method static IceSmsintService getSmsStatus(array $listMessagesIds)
  * @method static \Icekristal\SmsintForLaravel\Services\Smsint\InitParams setIsOnlyValid()
+ * @method static \Icekristal\SmsintForLaravel\Services\Smsint\InitParams setIsSaveDb(bool $isSaveDb)
  */
 class Smsint extends Facade
 {

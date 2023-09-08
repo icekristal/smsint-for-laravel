@@ -24,6 +24,7 @@ class IceSmsintService
         (new Sms())
             ->setSenderName($this->getSenderName())
             ->setRecipients($this->getRecipients())
+            ->setOwner($this->getOwner())
             ->setParams($this->getParams())
             ->sendMessage();
     }

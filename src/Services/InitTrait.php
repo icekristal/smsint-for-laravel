@@ -3,6 +3,7 @@
 namespace Icekristal\SmsintForLaravel\Services;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 trait InitTrait
 {
@@ -13,6 +14,8 @@ trait InitTrait
     private ?array $recipients = null;
     private ?string $senderName = null;
     private bool $isOnlyValid = false;
+    private bool $isSaveDb = false;
+    private Model|null $owner = null;
 
     private ?Carbon $startDateTime = null;
 
@@ -61,6 +64,7 @@ trait InitTrait
         $this->params['startDateTime'] = !is_null($this->getStartDateTime()) ? $this->getStartDateTime() : null;
 
         $this->params['is_only_validate'] = $this->getIsOnlyValid();
+        $this->params['is_save_db'] = $this->getIsSaveDb();
         return $this->params;
     }
 
@@ -120,6 +124,24 @@ trait InitTrait
     }
 
     /**
+     * @return bool
+     */
+    public function getIsSaveDb(): bool
+    {
+        return $this->isSaveDb;
+    }
+
+    /**
+     * @param bool $isSaveDb
+     * @return IceSmsintService
+     */
+    public function setIsSaveDb(bool $isSaveDb): IceSmsintService
+    {
+        $this->isSaveDb = $isSaveDb;
+        return $this;
+    }
+
+    /**
      * @return Carbon|string|null
      */
     public function getStartDateTime(): Carbon|string|null
@@ -134,6 +156,24 @@ trait InitTrait
     public function setStartDateTime(?Carbon $startDateTime): IceSmsintService
     {
         $this->startDateTime = $startDateTime;
+        return $this;
+    }
+
+    /**
+     * @return Model|null
+     */
+    public function getOwner(): ?Model
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param Model|null $owner
+     * @return IceSmsintService
+     */
+    public function setOwner(?Model $owner): IceSmsintService
+    {
+        $this->owner = $owner;
         return $this;
     }
 

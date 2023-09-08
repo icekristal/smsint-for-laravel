@@ -23,7 +23,7 @@ class Sms extends InitParams
     {
         $this->partUrl .= "/send/text";
         $arraySend = self::initTotalParams($this->getParams());
-        $this->setIsSaveDb(true);
+        $this->setIsSaveDb(config('smsint.is_save_db_sms', true));
         $messages = [];
 
         foreach ($this->getRecipients() as $recipient) {
